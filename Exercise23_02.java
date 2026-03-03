@@ -19,6 +19,8 @@
  * HINT 3 - Comparator version:
  *   The comparator must be passed through to the recursive mergeSort calls
  *   AND to the merge helper method.
+ *
+ * @author Maddy Puryear
  */
 
 import java.util.Arrays;
@@ -30,16 +32,35 @@ public class Exercise23_02 {
     // TODO 1: Implement mergeSort using Comparable
     //
     // Method signature:
-    //   public static <E extends Comparable<E>> void mergeSort(E[] list)
-    //
-    // Steps:
-    //   - Base case: if list.length <= 1, return (already sorted)
-    //   - Create firstHalf: (E[]) new Object[list.length / 2]
-    //   - Copy first half from list using System.arraycopy
-    //   - Create secondHalf: (E[]) new Object[list.length - list.length / 2]
-    //   - Copy second half from list using System.arraycopy
-    //   - Recursively call mergeSort on firstHalf and secondHalf
-    //   - Call merge(firstHalf, secondHalf, list)
+    public static <E extends Comparable<E>> void mergeSort(E[] list){
+
+        // Steps:
+        //   - Base case: if list.length <= 1, return (already sorted)
+        if(list.length <= 1){
+            return;
+        } else {
+            //   - Create firstHalf: (E[]) new Object[list.length / 2]
+            @SuppressWarnings("unchecked")
+            E[] firstHalf = (E[]) new Object[list.length / 2];
+
+            //   - Copy first half from list using System.arraycopy
+            System.arraycopy(list, 0, firstHalf, 0,list.length / 2);
+
+            //   - Create secondHalf: (E[]) new Object[list.length - list.length / 2]
+            E[] secondHalf = (E[]) new Object[list.length - list.length / 2];
+
+            //   - Copy second half from list using System.arraycopy
+            System.arraycopy(list, list.length / 2,secondHalf,
+                    0, list.length - list.length / 2);
+
+            //   - Recursively call mergeSort on firstHalf and secondHalf
+            mergeSort(firstHalf);
+            mergeSort(secondHalf);
+
+            //   - Call merge(firstHalf, secondHalf, list)
+            merge(firstHalf, secondHalf, list);
+        }
+    }
     // ---------------------------------------------------------------
 
 
@@ -47,18 +68,41 @@ public class Exercise23_02 {
     // TODO 2: Implement merge helper for Comparable version
     //
     // Method signature:
-    //   private static <E extends Comparable<E>>
-    //   void merge(E[] list1, E[] list2, E[] temp)
-    //
-    // Steps:
-    //   - Three pointers: current1=0, current2=0, current3=0
-    //   - While both lists have elements:
-    //       if list1[current1].compareTo(list2[current2]) < 0
-    //           take from list1
-    //       else
-    //           take from list2
-    //   - Copy any remaining elements from list1
-    //   - Copy any remaining elements from list2
+    private static <E extends Comparable<E>> void merge(E[] list1, E[] list2, E[] temp){
+
+        // Steps:
+        //   - Three pointers: current1=0, current2=0, current3=0
+        int current1 = 0;
+        int current2 = 0;
+        int current3 = 0;
+
+        //   - While both lists have elements:
+        while(current1 < list1.length && current2 < list2.length){
+
+            //       if list1[current1].compareTo(list2[current2]) < 0
+            if(list1[current1].compareTo(list2[current2]) < 0){
+
+                //           take from list1
+                temp[current3++] = list1[current1++];
+
+            } else { //       else
+
+                //           take from list2
+                temp[current3++] = list2[current2++];
+            }
+        }
+
+        //   - Copy any remaining elements from list1
+        while (current1 < list1.length){
+            temp[current3++] = list1[current1++];
+        }
+
+        //   - Copy any remaining elements from list2
+        while (current2 < list2.length){
+            temp[current3++] = list2[current2++];
+        }
+    }
+
     // ---------------------------------------------------------------
 
 
@@ -66,7 +110,26 @@ public class Exercise23_02 {
     // TODO 3: Implement mergeSort using Comparator
     //
     // Method signature:
-    //   public static <E> void mergeSort(E[] list, Comparator<? super E> comparator)
+    public static <E> void mergeSort(E[] list, Comparator<? super E> comparator){
+
+        if(list.length <= 1){
+            return;
+        } else {
+            E[] firstHalf = (E[]) new Object[list.length / 2];
+
+            System.arraycopy(list, 0, firstHalf, 0,list.length / 2);
+
+            E[] secondHalf = (E[]) new Object[list.length - list.length / 2];
+
+            System.arraycopy(list, list.length / 2,secondHalf,
+                    0, list.length - list.length / 2);
+
+            mergeSort(firstHalf, comparator);
+            mergeSort(secondHalf, comparator);
+
+            merge(firstHalf, secondHalf, list, comparator);
+        }
+    }
     //
     // Same structure as TODO 1, but:
     //   - Pass comparator to both recursive mergeSort calls
@@ -78,11 +141,34 @@ public class Exercise23_02 {
     // TODO 4: Implement merge helper for Comparator version
     //
     // Method signature:
-    //   private static <E>
-    //   void merge(E[] list1, E[] list2, E[] temp, Comparator<? super E> comparator)
-    //
-    // Same structure as TODO 2, but use:
-    //   comparator.compare(list1[current1], list2[current2]) < 0
+    private static <E> void merge(E[] list1, E[] list2, E[] temp, Comparator<? super E> comparator){
+
+        int current1 = 0;
+        int current2 = 0;
+        int current3 = 0;
+
+        while(current1 < list1.length && current2 < list2.length){
+
+            // Same structure as TODO 2, but use:
+            //   comparator.compare(list1[current1], list2[current2]) < 0
+            if(comparator.compare(list1[current1], list2[current2]) < 0){
+
+                temp[current3++] = list1[current1++];
+
+            } else {
+
+                temp[current3++] = list2[current2++];
+            }
+        }
+
+        while (current1 < list1.length){
+            temp[current3++] = list1[current1++];
+        }
+
+        while (current2 < list2.length){
+            temp[current3++] = list2[current2++];
+        }
+    }
     // ---------------------------------------------------------------
 
 
