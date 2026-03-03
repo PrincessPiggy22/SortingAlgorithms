@@ -40,14 +40,15 @@ public class Exercise23_02 {
             return;
         } else {
             //   - Create firstHalf: (E[]) new Object[list.length / 2]
-            @SuppressWarnings("unchecked")
-            E[] firstHalf = (E[]) new Object[list.length / 2];
+
+            E[] firstHalf = (E[]) new Comparable[list.length / 2];
 
             //   - Copy first half from list using System.arraycopy
             System.arraycopy(list, 0, firstHalf, 0,list.length / 2);
 
             //   - Create secondHalf: (E[]) new Object[list.length - list.length / 2]
-            E[] secondHalf = (E[]) new Object[list.length - list.length / 2];
+
+            E[] secondHalf = (E[]) new Comparable[list.length - list.length / 2];
 
             //   - Copy second half from list using System.arraycopy
             System.arraycopy(list, list.length / 2,secondHalf,
@@ -115,9 +116,11 @@ public class Exercise23_02 {
         if(list.length <= 1){
             return;
         } else {
+
             E[] firstHalf = (E[]) new Object[list.length / 2];
 
             System.arraycopy(list, 0, firstHalf, 0,list.length / 2);
+
 
             E[] secondHalf = (E[]) new Object[list.length - list.length / 2];
 
