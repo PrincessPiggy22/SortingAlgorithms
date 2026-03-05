@@ -32,7 +32,8 @@ public class Exercise23_01 {
     public static <E extends Comparable<E>> void insertionSort(E[] list){
         // Steps:
         //   - Outer loop: i from 1 to list.length - 1
-        for (int i = 1; i < list.length - 1; i++) {
+        // - 1 doesn't sort it proprley
+        for (int i = 1; i < list.length; i++) {
 
             //   - Save list[i] as currentElement
             E currentElement = list[i];
